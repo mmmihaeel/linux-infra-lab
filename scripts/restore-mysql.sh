@@ -34,9 +34,9 @@ main() {
       env MYSQL_PWD="${MYSQL_PASSWORD}" \
       mysql --binary-mode=1 -u"${MYSQL_USER}" "${MYSQL_DATABASE}"
   else
-    cat "${backup_file}" | compose exec -T mysql \
+    compose exec -T mysql \
       env MYSQL_PWD="${MYSQL_PASSWORD}" \
-      mysql --binary-mode=1 -u"${MYSQL_USER}" "${MYSQL_DATABASE}"
+      mysql --binary-mode=1 -u"${MYSQL_USER}" "${MYSQL_DATABASE}" <"${backup_file}"
   fi
 
   log_info "MySQL restore completed"

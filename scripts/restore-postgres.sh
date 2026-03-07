@@ -33,8 +33,8 @@ main() {
     gzip -dc "${backup_file}" | compose exec -T postgres \
       psql --set ON_ERROR_STOP=1 -U "${POSTGRES_USER}" -d "${POSTGRES_DB}"
   else
-    cat "${backup_file}" | compose exec -T postgres \
-      psql --set ON_ERROR_STOP=1 -U "${POSTGRES_USER}" -d "${POSTGRES_DB}"
+    compose exec -T postgres \
+      psql --set ON_ERROR_STOP=1 -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" <"${backup_file}"
   fi
 
   log_info "PostgreSQL restore completed"

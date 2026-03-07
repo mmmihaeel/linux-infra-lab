@@ -2,6 +2,12 @@
 
 This repository targets local infrastructure operations. The same topology can be adapted for a small Linux VM or homelab host with additional controls.
 
+## Scope boundaries
+
+- The current setup is designed for local infrastructure workflows and controlled lab environments.
+- TLS termination and centralized secret management are intentionally outside the scope of this iteration.
+- Backup retention is currently implemented as a local filesystem policy, with remote archival left as a future extension.
+
 ## Linux host expectations
 
 - Docker Engine and Compose plugin installed

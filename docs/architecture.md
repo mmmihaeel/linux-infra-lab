@@ -34,8 +34,9 @@
 - Bash scripts fail fast (`set -euo pipefail`) and validate inputs.
 - Backup scripts emit timestamped artifacts and enforce retention cleanup.
 
-## Operational boundaries
+## Scope boundaries
 
-- Project is local-first and intentionally avoids cloud dependencies.
-- Credentials are local defaults; secret management is documented as a deployment concern.
+- The current setup is designed for local infrastructure workflows and controlled lab environments.
+- TLS termination and centralized secret management are intentionally outside the scope of this iteration.
+- Backup retention is currently implemented as a local filesystem policy, with remote archival left as a future extension.
 - Apache server-status is enabled for local diagnostics and should be restricted in public environments.

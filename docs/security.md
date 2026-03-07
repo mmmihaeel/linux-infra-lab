@@ -1,8 +1,10 @@
 # Security
 
-## Scope
+## Scope boundaries
 
-This project is a local operations lab. It uses intentionally simple local credentials and does not include production secret management tooling.
+- The current setup is designed for local infrastructure workflows and controlled lab environments.
+- TLS termination and centralized secret management are intentionally outside the scope of this iteration.
+- Backup retention is currently implemented as a local filesystem policy, with remote archival left as a future extension.
 
 ## Security controls in this lab
 

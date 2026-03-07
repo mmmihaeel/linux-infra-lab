@@ -132,6 +132,12 @@ services/php-demo/       PHP backend service
 docker-compose.yml       Full local lab topology
 ```
 
+## Scope boundaries
+
+- The current setup is designed for local infrastructure workflows and controlled lab environments.
+- TLS termination and centralized secret management are intentionally outside the scope of this iteration.
+- Backup retention is currently implemented as a local filesystem policy, with remote archival left as a future extension.
+
 ## Security notes
 
 - Credentials in `.env` are for local lab use only.
