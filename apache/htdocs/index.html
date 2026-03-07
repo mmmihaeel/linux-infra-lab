@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>linux-infra-lab</title>
+    <style>
+      body {
+        font-family: "DejaVu Sans Mono", "Courier New", monospace;
+        margin: 0;
+        padding: 2rem;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+      h1 {
+        margin-top: 0;
+      }
+      code {
+        background: #1e293b;
+        padding: 0.2rem 0.4rem;
+      }
+      .panel {
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+        background: #111827;
+      }
+      a {
+        color: #38bdf8;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>linux-infra-lab</h1>
+    <p>Apache reverse proxy gateway for multi-service operations workflows.</p>
+    <div class="panel">
+      <p><strong>Routes</strong></p>
+      <ul>
+        <li><code>/node/health</code> -> node-demo</li>
+        <li><code>/php/health</code> -> php-demo</li>
+        <li><code>/healthz</code> -> node-demo health alias</li>
+        <li><code>/server-status?auto</code> -> Apache status</li>
+      </ul>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+.env
+
+# Runtime artifacts
+backups/**/*.sql
+backups/**/*.sql.gz
+logs/**/*.log
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp

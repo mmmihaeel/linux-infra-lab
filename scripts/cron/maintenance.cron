@@ -1,0 +1,14 @@
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+REPO_ROOT=/opt/linux-infra-lab
+
+# Health snapshots every 15 minutes
+*/15 * * * * cd "${REPO_ROOT}" && bash ./scripts/healthcheck.sh >> ./logs/cron/healthcheck.log 2>&1
+
+# Nightly database backups
+0 2 * * * cd "${REPO_ROOT}" && bash ./scripts/backup-postgres.sh >> ./logs/cron/maintenance.log 2>&1
+15 2 * * * cd "${REPO_ROOT}" && bash ./scripts/backup-mysql.sh >> ./logs/cron/maintenance.log 2>&1
+
+# Weekly log cleanup
+0 3 * * 0 cd "${REPO_ROOT}" && bash ./scripts/log-cleanup.sh --days 14 >> ./logs/cron/maintenance.log 2>&1
