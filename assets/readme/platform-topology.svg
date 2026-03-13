@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">linux-infra-lab platform topology placeholder</title>
+  <desc id="desc">Placeholder artwork for the linux-infra-lab platform topology section.</desc>
+  <rect width="1200" height="420" fill="#0f1115" />
+  <rect x="40" y="40" width="1120" height="340" rx="18" fill="#151922" stroke="#2d3442" />
+  <text x="600" y="220" fill="#e5e7eb" font-size="28" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif">linux-infra-lab / platform topology placeholder</text>
+</svg>

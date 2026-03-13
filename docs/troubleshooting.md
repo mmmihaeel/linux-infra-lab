@@ -1,125 +1,135 @@
 # Troubleshooting
 
-## 1) Apache container is unhealthy
+The quickest way to lose time in this lab is to inspect the wrong layer first. Start with container state, move to direct service health, then move to proxied routes through Apache. Use resets only after you understand whether the failure is in routing, service startup, dependency readiness, or persistent state.
 
-Symptoms:
-- `docker compose ps` shows `apache` as `unhealthy` or restarting.
+## Diagnostic Order
 
-Checks:
-```bash
-docker compose logs apache --tail 200
-tail -n 200 logs/apache/error.log
-curl -fsS http://localhost:8084/server-status?auto
+```mermaid
+flowchart TD
+    Start["Symptom or failed check"] --> Ps["docker compose ps"]
+    Ps --> Health{"Any container unhealthy?"}
+    Health -->|Yes| Logs["Inspect recent logs"]
+    Health -->|No| Direct["Check direct service health"]
+    Direct --> DirectOk{"Direct health passes?"}
+    DirectOk -->|No| Data["Check readiness dependencies"]
+    DirectOk -->|Yes| Proxy["Check proxied routes"]
+    Proxy --> ProxyOk{"Proxy route passes?"}
+    ProxyOk -->|No| Apache["Inspect Apache config and status"]
+    ProxyOk -->|Yes| Drill["Run smoke or restore validation"]
+    Logs --> Action["Choose targeted fix or full reset"]
+    Data --> Action
+    Apache --> Action
+    Drill --> Action
 ```
 
-Likely causes:
-- Invalid Apache config syntax
-- Upstream backend unavailable
-- Log directory permission issue
+## Apache Is Unhealthy
 
-Resolution:
-1. Validate Compose and restart stack:
-   ```bash
-   docker compose config -q
-   docker compose up -d --build apache
-   ```
-2. Confirm backend health:
-   ```bash
-   curl -fsS http://localhost:3006/health
-   curl -fsS http://localhost:8000/health
-   ```
+| Check | Command | Why it matters |
+| --- | --- | --- |
+| Container logs | `docker compose logs apache --tail 200` | Shows startup errors, proxy failures, and status endpoint issues |
+| File logs | `tail -n 200 logs/apache/error.log` | Surfaces Apache syntax and runtime problems from the mounted log directory |
+| Apache status | `curl -fsS http://localhost:8084/server-status?auto` | Confirms the health check target is reachable |
+| Rendered config | `docker compose config -q` | Confirms Compose rendering is valid before restarting |
 
-## 2) Reverse proxy route fails but backend is healthy
+Typical causes:
 
-Checks:
+- invalid Apache configuration
+- unhealthy upstream services
+- missing or unwritable log directory on the host
+
+## Proxied Route Fails but the Backend Is Healthy
+
+Compare direct and proxied checks:
+
 ```bash
+curl -fsS http://localhost:3006/health
+curl -fsS http://localhost:8000/health
 curl -i http://localhost:8084/node/health
 curl -i http://localhost:8084/php/health
-docker compose logs apache --tail 200
 ```
 
 Focus areas:
-- `apache/vhosts/default.conf` route definitions
-- trailing slash behavior (`/node` vs `/node/`)
-- upstream service names and ports (`node-demo:3006`, `php-demo:8000`)
 
-## 3) Healthcheck script reports DB failures
+- `apache/vhosts/default.conf`
+- service names and ports: `node-demo:3006` and `php-demo:8000`
+- redirect behavior for `/node` versus `/node/` and `/php` versus `/php/`
+- Apache status output and recent Apache error logs
 
-Checks:
+## Readiness or Dependency Failures
+
+When `/ready` fails, the issue is usually not the service process itself. It is usually one of its dependencies.
+
+| Dependency | Direct check | Context |
+| --- | --- | --- |
+| PostgreSQL | `docker compose exec -T postgres pg_isready -U app -d infra_lab` | Used by `node-demo /ready` |
+| MySQL | `docker compose exec -T mysql mysqladmin ping -h 127.0.0.1 -uroot -proot --silent` | Used by `php-demo /ready` |
+| Redis | `docker compose exec -T redis redis-cli ping` | Used by both `/ready` endpoints |
+
+Also inspect:
+
 ```bash
-docker compose ps
 docker compose logs postgres --tail 100
 docker compose logs mysql --tail 100
-```
-
-Verify readiness directly:
-```bash
-docker compose exec -T postgres pg_isready -U app -d infra_lab
-docker compose exec -T mysql mysqladmin ping -h 127.0.0.1 -uroot -proot --silent
+docker compose logs redis --tail 100
 ```
 
 Common causes:
-- data service still initializing
-- changed credentials in `.env` not matching running containers
-- stale volumes after env changes
 
-## 4) Backup script fails
+- a data service is still initializing
+- `.env` credentials changed while existing volumes still contain older state
+- a previous interrupted run left the environment inconsistent
 
-Checks:
+## Backup or Restore Failure
+
+Start with the health summary:
+
 ```bash
 bash ./scripts/healthcheck.sh
-bash ./scripts/backup-postgres.sh
-bash ./scripts/backup-mysql.sh
 ```
 
-If backup fails:
-1. Confirm target container is running.
-2. Confirm credentials in `.env`.
-3. Inspect DB logs for permission/authentication errors.
-4. Recreate environment if credentials changed:
-   ```bash
-   bash ./scripts/reset-env.sh --force
-   bash ./scripts/bootstrap.sh
-   ```
+Then inspect artifacts and container state:
 
-## 5) Restore script fails
-
-Checks:
-- File path and permissions
-- File format (`.sql` or `.sql.gz`)
-- DB container health
-
-Commands:
 ```bash
 ls -l backups/postgres
 ls -l backups/mysql
-bash ./scripts/restore-postgres.sh backups/postgres/<file>.sql
-bash ./scripts/restore-mysql.sh backups/mysql/<file>.sql
+docker compose ps
 ```
 
-## 6) Logs not being written
+What to verify:
 
-Checks:
-```bash
-ls -la logs/apache
-ls -la logs/cron
-bash ./scripts/log-summary.sh
-```
+- the target backup file exists and is readable
+- the destination database container is healthy
+- the credentials in `.env` still match the running state
+- disk space is available for new backup artifacts
 
-Action:
-- Run a request through Apache to generate traffic:
-  ```bash
-  curl -fsS http://localhost:8084/node/health
-  ```
-- Re-run `bash ./scripts/log-summary.sh`.
+If credentials or persistent state changed significantly, a full reset is usually faster than patching forward.
 
-## 7) Full recovery
+## Logs Are Missing or Not Updating
 
-If multiple services are in a bad state:
+| Check | Command |
+| --- | --- |
+| Apache log directory | `ls -la logs/apache` |
+| Cron log directory | `ls -la logs/cron` |
+| Generate fresh proxy traffic | `curl -fsS http://localhost:8084/node/health` |
+| Re-run the summary | `bash ./scripts/log-summary.sh` |
+
+Apache writes to the mounted `logs/apache` directory. Cron examples write to `logs/cron`. If those directories do not exist yet, run bootstrap first.
+
+## Full Recovery
+
+Use a full recovery only when targeted diagnosis is no longer efficient.
+
 ```bash
 bash ./scripts/reset-env.sh --force
-cp .env.example .env
 bash ./scripts/bootstrap.sh
+bash ./scripts/healthcheck.sh
 bash ./scripts/smoke-test.sh
 bash ./scripts/test-backup-restore.sh
 ```
+
+## Related Documents
+
+- [Runbooks](runbooks.md)
+- [Architecture](architecture.md)
+- [Topology](topology.md)
+- [Local Development](local-development.md)
