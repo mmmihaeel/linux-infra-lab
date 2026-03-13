@@ -1,7 +1,55 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
-  <title id="title">linux-infra-lab async flow placeholder</title>
-  <desc id="desc">Placeholder artwork for the linux-infra-lab async flow section.</desc>
-  <rect width="1200" height="420" fill="#0f1115" />
-  <rect x="40" y="40" width="1120" height="340" rx="18" fill="#151922" stroke="#2d3442" />
-  <text x="600" y="220" fill="#e5e7eb" font-size="30" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif">linux-infra-lab / async flow placeholder</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 300" width="1280" height="300">
+  <defs>
+    <pattern id="af-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1E293B" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow-af" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#64748B" />
+    </marker>
+  </defs>
+  <rect width="1280" height="300" fill="#0F172A" />
+  <rect width="1280" height="300" fill="url(#af-grid)" />
+  <text x="80" y="50" fill="#94A3B8" font-size="12" font-family="system-ui, -apple-system, sans-serif" font-weight="700" letter-spacing="1">OPERATIONAL FLOW</text>
+  <path d="M 220 120 L 260 120" stroke="#64748B" stroke-width="2" marker-end="url(#arrow-af)" />
+  <path d="M 420 120 L 460 120" stroke="#64748B" stroke-width="2" marker-end="url(#arrow-af)" />
+  <path d="M 620 120 L 660 120" stroke="#64748B" stroke-width="2" marker-end="url(#arrow-af)" />
+  <path d="M 820 120 L 860 120" stroke="#64748B" stroke-width="2" marker-end="url(#arrow-af)" />
+  <path d="M 340 150 L 340 180" stroke="#64748B" stroke-width="2" marker-end="url(#arrow-af)" />
+  <path d="M 420 210 L 660 210" stroke="#64748B" stroke-width="2" marker-end="url(#arrow-af)" />
+  <path d="M 820 210 L 940 210 L 940 150" fill="none" stroke="#64748B" stroke-width="2" marker-end="url(#arrow-af)" stroke-linejoin="round" />
+  <g transform="translate(60, 90)">
+    <rect width="160" height="60" fill="#1E293B" stroke="#334155" stroke-width="1" rx="8" />
+    <rect width="6" height="60" fill="#38BDF8" rx="3" />
+    <text x="80" y="35" fill="#F8FAFC" font-size="14" font-family="system-ui, -apple-system, sans-serif" font-weight="600" text-anchor="middle">Bootstrap</text>
+  </g>
+  <g transform="translate(260, 90)">
+    <rect width="160" height="60" fill="#1E293B" stroke="#334155" stroke-width="1" rx="8" />
+    <rect width="6" height="60" fill="#10B981" rx="3" />
+    <text x="80" y="35" fill="#F8FAFC" font-size="14" font-family="system-ui, -apple-system, sans-serif" font-weight="600" text-anchor="middle">Health Check</text>
+  </g>
+  <g transform="translate(460, 90)">
+    <rect width="160" height="60" fill="#1E293B" stroke="#334155" stroke-width="1" rx="8" />
+    <rect width="6" height="60" fill="#F59E0B" rx="3" />
+    <text x="80" y="35" fill="#F8FAFC" font-size="14" font-family="system-ui, -apple-system, sans-serif" font-weight="600" text-anchor="middle">Backup</text>
+  </g>
+  <g transform="translate(660, 90)">
+    <rect width="160" height="60" fill="#1E293B" stroke="#334155" stroke-width="1" rx="8" />
+    <rect width="6" height="60" fill="#F97316" rx="3" />
+    <text x="80" y="35" fill="#F8FAFC" font-size="14" font-family="system-ui, -apple-system, sans-serif" font-weight="600" text-anchor="middle">Restore</text>
+  </g>
+  <g transform="translate(860, 90)">
+    <rect width="160" height="60" fill="#1E293B" stroke="#334155" stroke-width="1" rx="8" />
+    <rect width="6" height="60" fill="#10B981" rx="3" />
+    <text x="80" y="35" fill="#F8FAFC" font-size="14" font-family="system-ui, -apple-system, sans-serif" font-weight="600" text-anchor="middle">Smoke Test</text>
+  </g>
+  <g transform="translate(260, 180)">
+    <rect width="160" height="60" fill="#1E293B" stroke="#334155" stroke-width="1" rx="8" />
+    <rect width="6" height="60" fill="#A855F7" rx="3" />
+    <text x="80" y="35" fill="#F8FAFC" font-size="14" font-family="system-ui, -apple-system, sans-serif" font-weight="600" text-anchor="middle">Logs</text>
+  </g>
+  <g transform="translate(660, 180)">
+    <rect width="160" height="60" fill="#1E293B" stroke="#EF4444" stroke-width="1" rx="8" />
+    <rect width="6" height="60" fill="#EF4444" rx="3" />
+    <text x="80" y="35" fill="#F8FAFC" font-size="14" font-family="system-ui, -apple-system, sans-serif" font-weight="600" text-anchor="middle">Reset</text>
+  </g>
 </svg>
